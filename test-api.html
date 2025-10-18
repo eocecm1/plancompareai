@@ -420,7 +420,12 @@
             output.textContent = 'Checking server status...';
             
             try {
-                const response = await fetch('http://localhost:3000/health');
+                // Use dynamic URL for health check
+                const healthUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3000/health'
+                    : `${window.location.protocol}//${window.location.host}/health`;
+                
+                const response = await fetch(healthUrl);
                 console.log('Health response status:', response.status);
                 console.log('Health response headers:', response.headers.get('content-type'));
                 
