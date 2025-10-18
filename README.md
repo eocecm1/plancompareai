@@ -7,11 +7,13 @@ A comprehensive Node.js application for comparing T-Mobile prepaid plans with co
 - **Plan Comparison**: Compare pricing, data, talk time, validity, and combo offers
 - **AI-Powered Suggestions**: Personalized plan recommendations using OpenAI GPT-4
 - **Strategic Recommendations**: AI-driven insights for new T-Mobile plan development
+- **Advanced Plan Comparator**: Utility class for detailed plan analysis and scoring
 - **Multiple Output Formats**: JSON, Markdown tables, and structured table data
 - **Database Integration**: PostgreSQL for persistent data storage and analytics
 - **API Rate Limiting**: Built-in request validation and rate limiting
 - **n8n Automation**: Webhook integration for workflow automation
 - **Comprehensive Logging**: Request tracking and comparison history
+- **Automated Code Review**: GitHub workflows for security and quality checks
 
 ## 🏗️ Architecture
 
