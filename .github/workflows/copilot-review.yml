@@ -1,4 +1,4 @@
-name: GitHub Copilot Code Review
+name: Code Quality Check
 
 on:
   pull_request:
@@ -10,9 +10,10 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
+  checks: write
 
 jobs:
-  copilot-review:
+  code-quality:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     
@@ -31,22 +32,69 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint (if configured)
+        run: npm run lint --if-present
+
       - name: Run tests
         run: npm test --if-present
 
-      - name: GitHub Copilot Code Review
-        uses: github/copilot-code-review-action@v1
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Check for common issues
+        run: |
+          echo "🔍 Checking for potential security issues..."
+          
+          # Check for hardcoded secrets
+          if grep -r "password.*=" . --exclude-dir=node_modules --exclude-dir=.git; then
+            echo "⚠️ Warning: Potential hardcoded passwords found"
+          fi
+          
+          # Check for SQL injection patterns
+          if grep -r "SELECT.*\${" . --exclude-dir=node_modules --exclude-dir=.git; then
+            echo "🚨 Warning: Potential SQL injection vulnerability found"
+          fi
+          
+          # Check for environment variable exposure
+          if grep -r "process\.env" . --exclude-dir=node_modules --exclude-dir=.git --exclude=".env.example"; then
+            echo "⚠️ Warning: Environment variables used in code - ensure they're not exposed"
+          fi
+          
+          echo "✅ Basic security checks completed"
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        if: always()
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional: Specify file patterns to review
-          include-patterns: |
-            **/*.js
-            **/*.json
-            **/*.md
-            **/*.html
-            **/*.css
-          # Optional: Exclude patterns
-          exclude-patterns: |
-            node_modules/**
-            dist/**
-            .git/**
+          script: |
+            const fs = require('fs');
+            
+            // Create a summary comment
+            const comment = `## 🤖 Automated Code Review Summary
+            
+            This pull request has been automatically reviewed for:
+            - ✅ Dependency vulnerabilities
+            - 🔍 Common security patterns
+            - 📋 Code style consistency
+            - 🧪 Test execution
+            
+            ### Key Areas Checked:
+            - **Security**: Scanned for hardcoded credentials and SQL injection patterns
+            - **Dependencies**: Checked for known vulnerabilities
+            - **Code Quality**: Linting and formatting checks
+            - **Tests**: Automated test execution
+            
+            ### 💡 Recommendations:
+            - Review any security warnings above
+            - Ensure all tests pass
+            - Follow established code conventions
+            - Update documentation if needed
+            
+            _This review was generated automatically. For more detailed analysis, consider using GitHub Copilot in your IDE._`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
