@@ -1,0 +1,80 @@
+name: ✨ Feature Request
+description: Suggest a new feature for PlanCompareAI
+title: "[FEATURE] "
+labels: ["enhancement", "needs-review"]
+assignees: ["eocecm1"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request ✨
+        
+        Help us improve PlanCompareAI by suggesting new features!
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: A clear description of the feature you'd like to see
+      placeholder: Describe the feature...
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Why would this feature be useful? What problem does it solve?
+      placeholder: Explain the use case...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: Which area of the application?
+      options:
+        - Plan comparison logic
+        - ChatKit/AI features
+        - API endpoints
+        - User interface
+        - Database/Data management
+        - Performance
+        - Security
+        - Mobile carriers support
+        - Analytics/Reporting
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Suggested Implementation
+      description: Any ideas on how this could be implemented?
+      placeholder: Implementation ideas...
+
+  - type: checkboxes
+    id: copilot-help
+    attributes:
+      label: GitHub Copilot Assistance
+      description: Request Copilot help with this feature
+      options:
+        - label: Request Copilot implementation suggestions
+        - label: Request Copilot code examples
+        - label: Request Copilot architecture guidance

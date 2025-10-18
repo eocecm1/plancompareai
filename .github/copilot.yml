@@ -1,0 +1,56 @@
+# GitHub Copilot Configuration
+# This file configures Copilot behavior for the repository
+
+# Enable Copilot suggestions for specific file types
+suggestions:
+  enabled: true
+  languages:
+    - javascript
+    - json
+    - markdown
+    - html
+    - css
+    - sql
+
+# Code review preferences
+review:
+  auto_review_enabled: true
+  focus_areas:
+    - security
+    - performance
+    - best_practices
+    - code_style
+    - documentation
+  
+  # Specific areas for PlanCompareAI
+  project_specific:
+    - api_design
+    - database_queries
+    - error_handling
+    - authentication
+    - data_validation
+
+# Chat integration settings
+chat:
+  enabled: true
+  context_files:
+    - "README.md"
+    - "package.json"
+    - ".github/copilot-instructions.md"
+    - "app.js"
+    - "database/schema.sql"
+
+# Custom instructions for this project
+instructions: |
+  This is a Node.js mobile plan comparison application with:
+  - Express.js backend with MVC architecture
+  - PostgreSQL database
+  - OpenAI ChatKit integration
+  - Production deployment on Render.com
+  
+  Focus on:
+  - API endpoint security and validation
+  - Database connection handling
+  - Error handling and logging
+  - Performance optimization
+  - Code documentation
