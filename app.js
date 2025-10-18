@@ -56,6 +56,44 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+// Debug endpoint to add test data
+app.get('/api/debug/add-test-data', async (req, res) => {
+  try {
+    const { Pool } = require('pg');
+    const pool = new Pool({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    });
+
+    // Add some test data
+    await pool.query(`
+      INSERT INTO prepaid_plans (provider, name, price, data_limit, features, description) 
+      VALUES 
+      ('T-Mobile', 'Connect', 15.00, '2.5GB', '{"unlimited_text": true, "unlimited_talk": true}', 'Basic prepaid plan with 2.5GB data'),
+      ('T-Mobile', 'Simply Prepaid', 40.00, '10GB', '{"unlimited_text": true, "unlimited_talk": true, "mobile_hotspot": true}', 'Mid-tier plan with 10GB data'),
+      ('AT&T', 'Prepaid Unlimited', 50.00, 'Unlimited', '{"unlimited_text": true, "unlimited_talk": true, "mobile_hotspot": true}', 'Unlimited data plan'),
+      ('Verizon', 'Prepaid', 35.00, '5GB', '{"unlimited_text": true, "unlimited_talk": true}', '5GB prepaid plan')
+      ON CONFLICT (provider, name) DO NOTHING
+    `);
+
+    res.json({ 
+      success: true, 
+      message: 'Test data added successfully',
+      note: 'Test plans for T-Mobile, AT&T, and Verizon have been added'
+    });
+  } catch (error) {
+    console.error('Error adding test data:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 // ChatKit session endpoint
 app.post('/api/chatkit/session', async (req, res) => {
   console.log('ChatKit session requested');
