@@ -500,4 +500,15 @@ router.get('/plans/providers/freshness', async (req, res) => {
   }
 });
 
+// Keep-alive endpoint for Render.com cold start prevention
+router.get('/ping', (req, res) => {
+  res.json({
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(process.uptime()),
+    message: 'PlanCompareAI server is awake and responsive',
+    version: '2.0.0'
+  });
+});
+
 module.exports = router;

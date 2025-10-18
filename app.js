@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rootRouter = require('./routes/root');
+const keepAlive = require('./utils/keepAlive');
 
 const app = express();
 
@@ -409,18 +410,26 @@ app.listen(PORT, (err) => {
   console.log(`🌐 Test dashboard: http://localhost:${PORT}/test`);
   console.log(`🔍 Health check: http://localhost:${PORT}/health`);
   console.log(`📱 API test: http://localhost:${PORT}/api/test`);
+  console.log(`🔄 Keep-alive endpoint: http://localhost:${PORT}/ping`);
   
   // Test database connection after server starts
   setTimeout(testDatabaseConnection, 1000);
+  
+  // Start keep-alive service for production (prevents 30min sleep on Render.com)
+  setTimeout(() => {
+    keepAlive.start();
+  }, 2000);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully');
+  keepAlive.stop();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
   console.log('SIGINT received, shutting down gracefully');
+  keepAlive.stop();
   process.exit(0);
 });
