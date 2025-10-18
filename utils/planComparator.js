@@ -4,6 +4,8 @@
 /**
  * Utility functions for mobile plan comparisons
  * @author PlanCompareAI Team
+ * @version 1.0.0
+ * @description Advanced plan comparison with scoring algorithm
  */
 
 class PlanComparator {
