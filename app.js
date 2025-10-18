@@ -94,6 +94,44 @@ app.get('/api/debug/add-test-data', async (req, res) => {
   }
 });
 
+// Debug endpoint to initialize database schema
+app.get('/api/debug/init-database', async (req, res) => {
+  try {
+    const { Pool } = require('pg');
+    const fs = require('fs');
+    const path = require('path');
+    
+    const pool = new Pool({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    });
+
+    // Read and execute schema file
+    const schemaPath = path.join(__dirname, 'database', 'schema.sql');
+    const schemaSQL = fs.readFileSync(schemaPath, 'utf8');
+    
+    // Execute schema creation
+    await pool.query(schemaSQL);
+
+    res.json({ 
+      success: true, 
+      message: 'Database schema initialized successfully',
+      note: 'All tables have been created: prepaid_plans, plan_comparisons, ai_recommendations, scraping_logs'
+    });
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      details: 'Make sure the database/schema.sql file exists and is readable'
+    });
+  }
+});
+
 // ChatKit session endpoint
 app.post('/api/chatkit/session', async (req, res) => {
   console.log('ChatKit session requested');

@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS prepaid_plans (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     data_allowance VARCHAR(100),
+    data_limit VARCHAR(100), -- Alias for data_allowance for compatibility
     talk_time VARCHAR(100),
     validity VARCHAR(100),
+    description TEXT, -- Plan description
     combo_offers TEXT[], -- Array of combo offers
     features JSONB, -- Additional features as JSON
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +26,9 @@ CREATE TABLE IF NOT EXISTS prepaid_plans (
     scraped_at TIMESTAMP, -- When this plan was scraped from website
     source_url VARCHAR(500), -- URL where plan was scraped from
     scraping_session_id UUID, -- Links to scraping session
-    data_freshness VARCHAR(20) DEFAULT 'static' -- fresh, recent, stale, static
+    data_freshness VARCHAR(20) DEFAULT 'static', -- fresh, recent, stale, static
+    -- Constraints
+    UNIQUE(provider, name) -- Prevent duplicate plans
 );
 
 -- Table for storing comparison results
